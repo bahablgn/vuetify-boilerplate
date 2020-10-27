@@ -28,18 +28,21 @@
         </v-img>
       </v-card>
 
-      <v-card class="mx-auto" max-width="344" v-for="n in 5" :key="n">
-        <v-img
-          src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-          height="200px"
-        ></v-img>
+      <v-card
+        class="mx-auto"
+        max-width="344"
+        v-for="user in users"
+        :key="user.id"
+        :id="'asdad' + index"
+      >
+        <v-img :src="user.picture.large" width="300"></v-img>
 
         <v-card-title>
-          Top western road trips
+          {{ user.name.first }} {{ user.name.last }}
         </v-card-title>
 
         <v-card-subtitle>
-          1,000 miles of wonder
+          {{ user.email }}
         </v-card-subtitle>
 
         <v-card-actions>
@@ -49,13 +52,13 @@
 
           <v-spacer></v-spacer>
 
-          <v-btn icon @click="show = !show">
+          <v-btn icon @click="user.show = !user.show">
             <v-icon>{{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
           </v-btn>
         </v-card-actions>
 
-        <v-expand-transition>
-          <div v-show="show">
+        <v-expand-transition multiple>
+          <div v-show="user.show">
             <v-divider></v-divider>
 
             <v-card-text>
@@ -63,7 +66,7 @@
               could deliver. You won't have time for sleeping, soldier, not with
               all the bed making you'll be doing. Then we'll go with that data
               file! Hey, you add a one and two zeros to that or we walk! You're
-              going to do his laundry? I've got to find a way to escape.
+              going to do his laundry? I've got to find a way to escape.🚀
             </v-card-text>
           </div>
         </v-expand-transition>
@@ -78,6 +81,8 @@ export default {
 
   data: () => ({
     show: false,
+    users: [],
+    users2: [],
     ecosystem: [
       {
         text: "vuetify-loader",
@@ -128,6 +133,27 @@ export default {
         href: "https://vuetifyjs.com/getting-started/frequently-asked-questions"
       }
     ]
-  })
+  }),
+  methods: {
+    async fetchUser() {
+      let response = await fetch("https://randomuser.me/api/?results=10");
+      let data = await response.json();
+      console.log(data);
+      this.users = data.results.map(user => ({
+        ...user,
+        show: false
+      }));
+      this.users2 = {
+        ...data.results,
+        show2: false
+      };
+    },
+    expandCard(param) {
+      console.log(param);
+    }
+  },
+  created() {
+    this.fetchUser();
+  }
 };
 </script>
